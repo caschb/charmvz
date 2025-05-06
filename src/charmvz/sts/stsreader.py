@@ -24,20 +24,12 @@ class StsReader:
             return f"[{self.name}:{self.dimensions}]"
 
     def __init__(self):
-        self.version = ""
-        self.machine = ""
-        self.numpe = -1
-        self.entry_count = -1
-        self.total_messages = -1
-        self.timestamp = 0
-        self.commandline = ""
-        self.charm_version = ""
-        self.username = ""
-        self.hostname = ""
         self.chares = dict()
         self.entry_names = dict()
         self.entry_chares = dict()
         self.messages = dict()
+        self.user_events = dict()
+        self.user_stats = dict()
 
         self.smpmode = False
 
@@ -54,6 +46,8 @@ class StsReader:
                     self.machine = tokens[1]
                 elif "PROCESSORS" == tokens[0]:
                     self.numpe = tokens[1]
+                elif "SMPMODE" == tokens[0]:
+                    print(f"ATTENTION: {tokens[0]}")
                 elif "TIMESTAMP" == tokens[0]:
                     self.timestamp = datetime.datetime.fromisoformat(tokens[1])
                 elif "COMMANDLINE" == tokens[0]:
@@ -64,8 +58,12 @@ class StsReader:
                     self.username = tokens[1]
                 elif "HOSTNAME" == tokens[0]:
                     self.hostname = tokens[1]
+                elif "TOTAL_CHARES" == tokens[0]:
+                    self.total_chares = int(tokens[1])
                 elif "TOTAL_EPS" == tokens[0]:
-                    self.total_events = tokens[1]
+                    self.total_events = int(tokens[1])
+                elif "TOTAL_MSGS" == tokens[0]:
+                    self.total_messages = int(tokens[1])
                 elif "CHARE" == tokens[0]:
                     chare_id = int(tokens[1])
                     chare_name = tokens[2].strip('"')
@@ -84,3 +82,26 @@ class StsReader:
                     message_id = int(tokens[1])
                     message_size = int(tokens[2])
                     self.messages[message_id] = message_size
+                elif "EVENT" == tokens[0]:
+                    key = int(tokens[1])
+                    if key not in self.user_events.keys():
+                        event_name = "".join(tokens[2:-1])
+                        self.user_events[key] = event_name
+                elif "TOTAL_EVENTS" == tokens[0]:
+                    self.total_events = int(tokens[1])
+                elif "STAT" == tokens[0]:
+                    key = int(tokens[1])
+                    if key not in self.user_stats.keys():
+                        stat_name = "".join(tokens[2:-1])
+                        self.user_stats[key] = stat_name
+                elif "TOTAL_STATS" == tokens[0]:
+                    self.total_stats = int(tokens[1])
+                elif "TOTAL_PAPI_EVENTS" == tokens[0]:
+                    self.has_papi = True
+                    self.total_papi_events = int(tokens[1])
+                elif "PAPI_EVENT" == tokens[0]:
+                    self.has_papi = True
+                    key = int(tokens[1])
+                    self.papi_events[key] = tokens[2]
+                elif "END" == tokens[0]:
+                    break
