@@ -10,8 +10,17 @@ def main():
         description="Takes a directory for a Projections log and creates a CSV for PajeNG",
     )
     parser.add_argument("log_directory", type=pathlib.Path)
+    parser.add_argument(
+        "-o",
+        "--out_file",
+        type=pathlib.Path,
+        required=False,
+        help="File to output csv",
+    )
     args = parser.parse_args()
     log_directory: pathlib.Path = args.log_directory
+    out_file: pathlib.Path = args.out_file
+    print(out_file)
 
     stsfilepath = None
     logfilepaths = []
@@ -25,9 +34,11 @@ def main():
     assert stsfilepath is not None
     assert len(logfilepaths) > 0
 
-    logreader = charmvz.log.logreader.LogReader(logfilepaths)
-    logreader.read_log(0)
-    logreader.read_log(1)
+    sts_reader = StsReader()
+    sts_reader.read_sts(stsfilepath)
+    logreader = charmvz.log.logreader.LogReader(logfilepaths, sts_reader)
+    logreader.read_logs()
+    logreader.print_entries(out_file)
 
 
 if __name__ == "__main__":

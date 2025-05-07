@@ -33,6 +33,12 @@ class StsReader:
 
         self.smpmode = False
 
+    def get_entry_chare_dimensions_by_id(self, id: int) -> int:
+        return self.entry_chares[id].dimensions
+
+    def get_entry_chare_name_by_id(self, id: int) -> str:
+        return self.entry_chares[id].name
+
     def read_sts(self, fullpath: os.PathLike):
         extension = os.path.splitext(fullpath)[-1][1:]
         if extension != "sts":
