@@ -92,12 +92,11 @@ cat | \
 *** Create Containers
 
 #+begin_src shell :results output :exports both
-OUTPUT="output.pj"
 PE_ELEMENTS=$(cat ${TEMPFILE} | cut -d, -f4 | sort | uniq)
 echo ${PE_ELEMENTS}
 for pe in ${PE_ELEMENTS}; do
     echo "10 0.0 PE pe${pe} 0"
-done >> $OUTPUT
+done
 #+end_src
 
 #+RESULTS:
@@ -106,7 +105,6 @@ done >> $OUTPUT
 *** Events themselves (push and pops)
 
 #+begin_src shell :results output :exports both
-OUTPUT="output.pj"
 cat ${TEMPFILE} | \
     sed 's/,/ /g' | \
     awk '{ print $1 " " $2 " pe" $4 " STATE " $3 }' | \
