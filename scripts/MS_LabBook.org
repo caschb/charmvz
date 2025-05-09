@@ -1,5 +1,5 @@
-#+TITLE: LabBook Asch
-#+AUTHOR: Lucas M. Schnorr
+#+TITLE: LabBook
+#+AUTHOR: CharmVZ Authors
 #+STARTUP: overview indent
 #+EXPORT_SELECT_TAGS: export
 #+EXPORT_EXCLUDE_TAGS: noexport
