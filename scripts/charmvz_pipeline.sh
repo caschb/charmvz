@@ -1,87 +1,135 @@
 #!/bin/bash
-OUTPUT="output.pj"
-echo '%EventDef PajePushState 2
-%       Time date
-%       Container string
-%       Type string
-%       Value string
-%EndEventDef
-%EventDef PajePopState 3
-%       Time date
-%       Container string
-%       Type string
-%EndEventDef
-%EventDef PajeCreateContainer 10
-%       Time date
-%       Type string
-%       Name string
-%       Container string
-%EndEventDef
-%EventDef PajeDestroyContainer 11
-%       Time date
-%       Type string
-%       Name string
-%EndEventDef
-%EventDef PajeDefineContainerType 12
-%       Name string
-%       Type string
-%EndEventDef
-%EventDef PajeDefineVariableType 13
-%       Alias string
-%       Type string
-%       Name string
-%       Color color
-%EndEventDef
-%EventDef PajeDefineStateType 14
-%       Name string
-%       Type string
-%EndEventDef
-%EventDef PajeDefineEventType 15
-%       Alias string
-%       Type string
-%       Name string
-%EndEventDef
-%EventDef PajeDefineLinkType 16
-%       Alias string
-%       Type string
-%       StartContainerType string
-%       EndContainerType string
-%       Name string
-%EndEventDef
-%EventDef PajeDefineEntityValue 17
-%       Alias string
-%       Type string
-%       Name string
-%       Color color
-%EndEventDef
-#
-# This is the type hierarchy
-#
-12 PE 0
-14 STATE PE
-#
-# These are the events
-#' > $OUTPUT
+#!/bin/bash
 
-TEMPFILE=/tmp/mytempfile.aux
+declare -A pj_ids
+
+generate_event_def() {
+    local event_name="$1"
+    local id="$2"
+    pj_ids[$event_name]=$id
+    echo "%EventDef $event_name $id"
+    "define_$event_name"
+    generate_event_closure
+}
+
+generate_event_closure() {
+    echo "%EndEventDef"
+}
+
+field_time()         { echo "%       Time date"; }
+field_container()    { echo "%       Container string"; }
+field_type()         { echo "%       Type string"; }
+field_value_string() { echo "%       Value string"; }
+field_value_double() { echo "%       Value double"; }
+field_name()         { echo "%       Name string"; }
+field_color()        { echo "%       Color color"; }
+field_start_container() { echo "%       StartContainer string"; }
+field_end_container()   { echo "%       EndContainer string"; }
+field_start_container_type() { echo "%       StartContainerType string"; }
+field_end_container_type()   { echo "%       EndContainerType string"; }
+field_key()          { echo "%       Key string"; }
+
+define_PajePushState() {
+    field_time
+    field_container
+    field_type
+    field_value_string
+}
+
+define_PajePopState() {
+    field_time
+    field_container
+    field_type
+}
+
+define_PajeDefineContainerType() {
+    field_name
+    field_type
+}
+
+define_PajeDefineStateType() {
+    field_name
+    field_type
+}
+
+define_PajeCreateContainer() {
+    field_time
+    field_type
+    field_name
+    field_container
+}
+
+define_PajeDestroyContainer() {
+    field_time
+    field_type
+    field_name
+}
+
+generate_event_def PajeCreateContainer 0
+generate_event_def PajeDestroyContainer 1
+generate_event_def PajePushState 2
+generate_event_def PajePopState 3
+generate_event_def PajeDefineContainerType 4
+generate_event_def PajeDefineStateType 5
+
+pj() {
+    local event_name="$1"
+    echo ${pj_ids[$event_name]}
+}
+
+# PajePushState Time Container Type Value
+pj_PushState() {
+    local time="$1" container="$2" type="$3" value="$4"
+    echo $(pj "PajePushState") "$time" "$container" "$type" "$value"
+}
+
+# PajePopState Time Container Type
+pj_PopState() {
+    local time="$1" container="$2" type="$3"
+    echo $(pj "PajePopState") "$time" "$container" "$type"
+}
+
+# PajeDefineContainerType [Alias] Type Name
+pj_DefineContainerType() {
+    local type="$1" name="$2"
+    echo $(pj "PajeDefineContainerType") "$type" "$name"
+}
+
+pj_DefineStateType() {
+    local type="$1" name="$2"
+    echo $(pj "PajeDefineStateType") "$type" "$name"
+}
+
+# PajeCreateContainer Time [Alias] Container Type Name
+pj_CreateContainer() {
+    local time="$1" type="$2" name="$3" container="$4"
+    echo $(pj "PajeCreateContainer") "$time" "$type" "$name" "$container"
+}
+
+# PajeDestroyContainer Time Type Name
+pj_DestroyContainer() {
+    local time="$1" type="$2" name="$3"
+    echo $(pj "PajeDestroyContainer") "$time" "$type" "$name"
+}
+
+pj_DefineContainerType PE 0
+pj_DefineStateType STATE PE
+
+TEMPFILE=mytempfile.aux
 cat | \
     grep _PROCESSING | \
-    cut -d, -f1,5,2,9 > ${TEMPFILE}
+    cut -d, -f1,5,7,9 > ${TEMPFILE}
 
-OUTPUT="output.pj"
-TEMPFILE=/tmp/mytempfile.aux
 PE_ELEMENTS=$(cat ${TEMPFILE} | cut -d, -f4 | sort | uniq)
-echo ${PE_ELEMENTS}
 for pe in ${PE_ELEMENTS}; do
-    echo "10 0.0 PE pe${pe} 0"
-done >> $OUTPUT
+    pj_CreateContainer 0.0 PE pe${pe} 0
+done
 
-OUTPUT="output.pj"
-TEMPFILE=/tmp/mytempfile.aux
 cat ${TEMPFILE} | \
     sed 's/,/ /g' | \
     awk '{ print $1 " " $2 " pe" $4 " STATE " $3 }' | \
-    sed '/^3/ s/ [^ ]*$//' >> $OUTPUT
+    sed '/^3/ s/ [^ ]*$//' | \
+    sort -S 50% --parallel=4 -T . -s -V --key=2,2
 
 #OUTPUT="output.pj"
 #CSV="output.csv"
