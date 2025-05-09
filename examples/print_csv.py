@@ -20,7 +20,6 @@ def main():
     args = parser.parse_args()
     log_directory: pathlib.Path = args.log_directory
     out_file: pathlib.Path = args.out_file
-    print(out_file)
 
     stsfilepath = None
     logfilepaths = []
