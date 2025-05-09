@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 OUTPUT="output.pj"
 echo '%EventDef PajePushState 2
 %       Time date
