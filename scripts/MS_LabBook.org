@@ -146,9 +146,8 @@ cat | \
 
 #+begin_src shell :results output :exports both
 PE_ELEMENTS=$(cat ${TEMPFILE} | cut -d, -f4 | sort | uniq)
-echo ${PE_ELEMENTS}
 for pe in ${PE_ELEMENTS}; do
-    echo "10 0.0 PE pe${pe} 0"
+    pj_CreateContainer 0.0 PE pe${pe} 0
 done
 #+end_src
 
