@@ -63,9 +63,8 @@ echo '%EventDef PajePushState 2
 # These are the events
 #' > $OUTPUT
 
-INPUTFILE=${HOME}/Devel/charmvz/results.csv
 TEMPFILE=/tmp/mytempfile.aux
-cat ${INPUTFILE} | \
+cat | \
     grep _PROCESSING | \
     cut -d, -f1,5,2,9 > ${TEMPFILE}
 

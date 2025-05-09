@@ -81,9 +81,8 @@ echo '%EventDef PajePushState 2
 *** Grab only the part that matters
 
 #+begin_src shell :results output :exports both
-INPUTFILE=${HOME}/Devel/charmvz/results.csv
 TEMPFILE=/tmp/mytempfile.aux
-cat ${INPUTFILE} | \
+cat | \
     grep _PROCESSING | \
     cut -d, -f1,5,2,9 > ${TEMPFILE}
 #+end_src
