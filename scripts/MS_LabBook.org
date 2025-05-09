@@ -7,7 +7,7 @@
 * Meetings
 ** 2025-05-02 Grab a preliminary output of projections' cli and do paje
 :properties:
-:header-args: :tangle pipeline.sh :shebang #!/bin/sh
+:header-args: :tangle charmvz_pipeline.sh :shebang #!/bin/sh
 :end:
 *** Header
 #+begin_src shell :results output :exports both
