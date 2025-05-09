@@ -84,7 +84,7 @@ echo '%EventDef PajePushState 2
 TEMPFILE=/tmp/mytempfile.aux
 cat | \
     grep _PROCESSING | \
-    cut -d, -f1,5,2,9 > ${TEMPFILE}
+    cut -d, -f1,5,7,9 > ${TEMPFILE}
 #+end_src
 
 #+RESULTS:
