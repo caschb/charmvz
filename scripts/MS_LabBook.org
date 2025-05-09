@@ -108,7 +108,8 @@ done
 cat ${TEMPFILE} | \
     sed 's/,/ /g' | \
     awk '{ print $1 " " $2 " pe" $4 " STATE " $3 }' | \
-    sed '/^3/ s/ [^ ]*$//' >> $OUTPUT
+    sed '/^3/ s/ [^ ]*$//' | \
+    sort -S 50% --parallel=4 -T . -s -V --key=2,2
 #+end_src
 
 #+RESULTS:
