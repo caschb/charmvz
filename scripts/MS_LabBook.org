@@ -81,7 +81,7 @@ echo '%EventDef PajePushState 2
 *** Grab only the part that matters
 
 #+begin_src shell :results output :exports both
-TEMPFILE=/tmp/mytempfile.aux
+TEMPFILE=mytempfile.aux
 cat | \
     grep _PROCESSING | \
     cut -d, -f1,5,7,9 > ${TEMPFILE}
@@ -93,7 +93,6 @@ cat | \
 
 #+begin_src shell :results output :exports both
 OUTPUT="output.pj"
-TEMPFILE=/tmp/mytempfile.aux
 PE_ELEMENTS=$(cat ${TEMPFILE} | cut -d, -f4 | sort | uniq)
 echo ${PE_ELEMENTS}
 for pe in ${PE_ELEMENTS}; do
@@ -108,7 +107,6 @@ done >> $OUTPUT
 
 #+begin_src shell :results output :exports both
 OUTPUT="output.pj"
-TEMPFILE=/tmp/mytempfile.aux
 cat ${TEMPFILE} | \
     sed 's/,/ /g' | \
     awk '{ print $1 " " $2 " pe" $4 " STATE " $3 }' | \
