@@ -1,7 +1,8 @@
-import pathlib
-from charmvz.sts.stsreader import StsReader
-import charmvz.log.logreader
 import argparse
+import pathlib
+
+import charmvz.log.logreader
+from charmvz.sts.stsreader import StsReader
 
 
 def main():
@@ -19,7 +20,6 @@ def main():
     )
     args = parser.parse_args()
     log_directory: pathlib.Path = args.log_directory
-    out_file: pathlib.Path = args.out_file
 
     stsfilepath = None
     logfilepaths = []
@@ -36,8 +36,7 @@ def main():
     sts_reader = StsReader()
     sts_reader.read_sts(stsfilepath)
     logreader = charmvz.log.logreader.LogReader(logfilepaths, sts_reader)
-    logreader.read_logs()
-    logreader.print_entries(out_file)
+    logreader.print_entries()
 
 
 if __name__ == "__main__":
