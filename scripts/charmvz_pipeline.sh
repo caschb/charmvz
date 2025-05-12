@@ -1,6 +1,4 @@
 #!/bin/bash
-#!/bin/bash
-
 declare -A pj_ids
 
 generate_event_def() {

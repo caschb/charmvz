@@ -11,7 +11,6 @@
 :end:
 *** Header Mechanism
 #+begin_src shell :results output :exports both
-#!/bin/bash
 
 declare -A pj_ids
 
