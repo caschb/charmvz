@@ -30,6 +30,7 @@ class StsReader:
         self.messages = dict()
         self.user_events = dict()
         self.user_stats = dict()
+        self.papi_events = dict()
 
         self.smpmode = False
 
