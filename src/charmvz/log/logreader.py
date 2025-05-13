@@ -11,7 +11,7 @@ class LogReader:
         self.logfiles = logfiles
         self.sts_reader = sts_reader
 
-    def get_entry_from_line(self, line: str) -> LogEntry:
+    def get_entry_from_line(self, line: str, pe: int) -> LogEntry:
         line_components = line.split()
         entry = LogEntry()
         entry_id = int(line_components[0])
@@ -29,7 +29,8 @@ class LogReader:
             or entry.type == EntryType.END_UNPACK
         ):
             entry.timestamp = int(line_components[1])
-            entry.pe = int(line_components[2])
+            entry.pCreation = int(line_components[2])
+            entry.pe = pe
         elif entry.type == EntryType.END_PHASE:
             entry.timestamp = int(line_components[2])
             # print(line_components)
@@ -53,7 +54,8 @@ class LogReader:
             )
             entry.timestamp = int(line_components[3])
             entry.event = int(line_components[4])
-            entry.pe = int(line_components[5])
+            entry.pCreation = int(line_components[5])
+            entry.pe = pe 
             entry.msglen = int(line_components[6])
             entry.send_time = int(line_components[7])
         elif entry.type == EntryType.CREATION_BCAST:
@@ -67,7 +69,8 @@ class LogReader:
             )
             entry.timestamp = int(line_components[3])
             entry.event = int(line_components[4])
-            entry.pe = int(line_components[5])
+            entry.pCreation = int(line_components[5])
+            entry.pe = pe 
             entry.msglen = int(line_components[6])
             entry.send_time = int(line_components[7])
             entry.num_pes = int(line_components[8])
@@ -82,7 +85,8 @@ class LogReader:
             )
             entry.timestamp = int(line_components[3])
             entry.event = int(line_components[4])
-            entry.pe = int(line_components[5])
+            entry.pCreation = int(line_components[5])
+            entry.pe = pe 
             entry.msglen = int(line_components[6])
             entry.send_time = int(line_components[7])
             entry.num_pes = int(line_components[8])
@@ -99,7 +103,8 @@ class LogReader:
             )
             entry.timestamp = int(line_components[3])
             entry.event = int(line_components[4])
-            entry.pe = int(line_components[5])
+            entry.pCreation = int(line_components[5])
+            entry.pe = pe 
             entry.msglen = int(line_components[6])
             entry.recv_time = int(line_components[7])
             dimensions = self.sts_reader.get_entry_chare_dimensions_by_id(
@@ -125,7 +130,8 @@ class LogReader:
             )
             entry.timestamp = int(line_components[3])
             entry.event = int(line_components[4])
-            entry.pe = int(line_components[5])
+            entry.pCreation = int(line_components[5])
+            entry.pe = pe 
             entry.msglen = int(line_components[6])
             entry.cpu_end_time = int(line_components[7])
             if len(line_components) > 8:
@@ -146,7 +152,8 @@ class LogReader:
                 entry.message_type == EntryType.INVALID
             entry.timestamp = int(line_components[2])
             entry.event = int(line_components[3])
-            entry.pe = int(line_components[4])
+            entry.pCreation = int(line_components[4])
+            entry.pe = pe 
             entry.msglen = int(line_components[5])
         elif entry.type == EntryType.ENQUEUE or entry.type == EntryType.DEQUEUE:
             try:
@@ -155,14 +162,16 @@ class LogReader:
                 entry.message_type == EntryType.INVALID
             entry.timestamp = int(line_components[2])
             entry.event = int(line_components[3])
-            entry.pe = int(line_components[4])
+            entry.pCreation = int(line_components[4])
+            entry.pe = pe 
         elif (
             entry.type == EntryType.BEGIN_INTERRUPT
             or entry.type == EntryType.END_INTERRUPT
         ):
             entry.timestamp = int(line_components[1])
             entry.event = int(line_components[2])
-            entry.pe = int(line_components[3])
+            entry.pCreation = int(line_components[3])
+            entry.pe = pe 
         elif (
             entry.type == EntryType.BEGIN_COMPUTING
             or entry.type == EntryType.END_COMPUTING
@@ -178,7 +187,8 @@ class LogReader:
             entry.timestamp = int(line_components[1])
             entry.user_time = float(line_components[2])
             entry.stat = float(line_components[3])
-            entry.pe = int(line_components[4])
+            entry.pCreation = int(line_components[4])
+            entry.pe = pe 
             entry.user_event_id = int(line_components[5])
         return entry
 
@@ -194,20 +204,22 @@ class LogReader:
 
         if print_header:
             out_file.write(
-                "entry type,entry type name,message type,message type name,message time,sts entry,sts entry name,event,pe\n"
+                "entry type,entry type name,message type,message type name,message time,sts entry,sts entry name,event,pe,creation pe\n"
             )
 
         for logfile in self.logfiles:
             open_func = None
             if logfile.suffix == ".gz":
                 open_func = gzip.open
+                pe = int(logfile.name.split(".")[-3])
             else:
                 open_func = open
+                pe = int(logfile.name.split(".")[-2])
 
             with open_func(logfile, "rt") as f:
                 f.readline()
                 for line in f:
-                    entry = self.get_entry_from_line(line)
+                    entry = self.get_entry_from_line(line, pe)
                     out_file.write(f"{entry}\n")
 
         if filename:

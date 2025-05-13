@@ -83,6 +83,7 @@ class LogEntry:
         self.sts_entry_name = ""
         self.event = -1
         self.pe = -1
+        self.pCreation = -1
         self.cast_pes = -1
         self.msglen = -1  # <-> CREATION
         self.user_event_id = -1  # <-> USER_EVENT_PAIR
@@ -128,7 +129,7 @@ class LogEntry:
         )
 
     def __repr__(self) -> str:
-        message = f"{self.type.value},{self.type.name},{self.message_type.value},{self.message_type.name},{self.timestamp},{self.sts_entry},{self.sts_entry_name},{self.event},{self.pe}"
+        message = f"{self.type.value},{self.type.name},{self.message_type.value},{self.message_type.name},{self.timestamp},{self.sts_entry},{self.sts_entry_name},{self.event},{self.pe},{self.pCreation}"
         return message
 
     def per_type_repr(self) -> str:
