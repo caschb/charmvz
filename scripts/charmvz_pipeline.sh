@@ -113,7 +113,7 @@ pj_DestroyContainer() {
 pj_DefineContainerType PE 0
 pj_DefineStateType STATE PE
 
-TEMPFILE=mytempfile.aux
+TEMPFILE=/tmp/out.aux
 cat | \
     grep _PROCESSING | \
     cut -d, -f1,5,7,9 > ${TEMPFILE}
@@ -123,13 +123,14 @@ for pe in ${PE_ELEMENTS}; do
     pj_CreateContainer 0.0 PE pe${pe} 0
 done
 
+PAJEFILE=/tmp/out.pj
 cat ${TEMPFILE} | \
     sed 's/,/ /g' | \
     awk '{ print $1 " " $2 " pe" $4 " STATE " $3 }' | \
     sed '/^3/ s/ [^ ]*$//' | \
-    sort -S 50% --parallel=4 -T . -s -V --key=2,2
+    sort -S 50% --parallel=4 -T . -s -V --key=2,2 > ${PAJEFILE}
 
 #OUTPUT="output.pj"
-#CSV="output.csv"
-#~/dev/pajeng/b13/pj_dump ${OUTPUT} | grep ^State > ${CSV}
+CSV="output.csv"
+~/dev/pajeng/b13/pj_dump ${PAJEFILE} | grep ^State > ${CSV}
 #head ${CSV}

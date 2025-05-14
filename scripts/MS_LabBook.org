@@ -133,7 +133,7 @@ pj_DefineStateType STATE PE
 *** Grab only the part that matters
 
 #+begin_src shell :results output :exports both
-TEMPFILE=mytempfile.aux
+TEMPFILE=/tmp/out.aux
 cat | \
     grep _PROCESSING | \
     cut -d, -f1,5,7,9 > ${TEMPFILE}
@@ -156,11 +156,12 @@ done
 *** Events themselves (push and pops)
 
 #+begin_src shell :results output :exports both
+PAJEFILE=/tmp/out.pj
 cat ${TEMPFILE} | \
     sed 's/,/ /g' | \
     awk '{ print $1 " " $2 " pe" $4 " STATE " $3 }' | \
     sed '/^3/ s/ [^ ]*$//' | \
-    sort -S 50% --parallel=4 -T . -s -V --key=2,2
+    sort -S 50% --parallel=4 -T . -s -V --key=2,2 > ${PAJEFILE}
 #+end_src
 
 #+RESULTS:
@@ -169,8 +170,8 @@ cat ${TEMPFILE} | \
 
 #+begin_src shell :results output :exports both
 #OUTPUT="output.pj"
-#CSV="output.csv"
-#~/dev/pajeng/b13/pj_dump ${OUTPUT} | grep ^State > ${CSV}
+CSV="output.csv"
+~/dev/pajeng/b13/pj_dump ${PAJEFILE} | grep ^State > ${CSV}
 #head ${CSV}
 #+end_src
 
