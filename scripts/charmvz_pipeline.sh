@@ -128,9 +128,9 @@ cat ${TEMPFILE} | \
     sed 's/,/ /g' | \
     awk '{ print $1 " " $2 " pe" $4 " STATE " $3 }' | \
     sed '/^3/ s/ [^ ]*$//' | \
-    sort -S 50% --parallel=4 -T . -s -V --key=2,2 > ${PAJEFILE}
+    sort -S 50% --parallel=4 -T . -s -V --key=2,2
 
 #OUTPUT="output.pj"
-CSV="output.csv"
-~/dev/pajeng/b13/pj_dump ${PAJEFILE} | grep ^State > ${CSV}
+# CSV="output.csv"
+# ~/dev/pajeng/b13/pj_dump ${PAJEFILE} | grep ^State > ${CSV}
 #head ${CSV}
