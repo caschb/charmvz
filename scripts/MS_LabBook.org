@@ -133,7 +133,7 @@ pj_DefineStateType STATE PE
 *** Grab only the part that matters
 
 #+begin_src shell :results output :exports both
-TEMPFILE=/tmp/out.aux
+TEMPFILE=/tmp/out_${1}.aux
 cat | \
     grep _PROCESSING | \
     cut -d, -f1,5,7,9 > ${TEMPFILE}
@@ -156,7 +156,7 @@ done
 *** Events themselves (push and pops)
 
 #+begin_src shell :results output :exports both
-PAJEFILE=/tmp/out.pj
+PAJEFILE=/tmp/out_${1}.pj
 cat ${TEMPFILE} | \
     sed 's/,/ /g' | \
     awk '{ print $1 " " $2 " pe" $4 " STATE " $3 }' | \
@@ -171,7 +171,7 @@ cat ${TEMPFILE} | \
 #+begin_src shell :results output :exports both
 #OUTPUT="output.pj"
 # CSV="output.csv"
-# ~/dev/pajeng/b13/pj_dump ${PAJEFILE} | grep ^State > ${CSV}
+~/pajeng/build/pj_dump ${PAJEFILE}
 #head ${CSV}
 #+end_src
 
@@ -287,4 +287,5 @@ df |>
   - oversubscription intensity
 **** Open an overleaf with the CARLA conference format
 - Put a structure of the document
+  
   
