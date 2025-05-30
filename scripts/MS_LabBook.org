@@ -171,7 +171,7 @@ cat ${TEMPFILE} | \
 #+begin_src shell :results output :exports both
 #OUTPUT="output.pj"
 # CSV="output.csv"
-~/pajeng/build/pj_dump ${PAJEFILE}
+#~/pajeng/build/pj_dump ${PAJEFILE}
 #head ${CSV}
 #+end_src
 

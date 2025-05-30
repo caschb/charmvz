@@ -132,5 +132,5 @@ cat ${TEMPFILE} | \
 
 #OUTPUT="output.pj"
 # CSV="output.csv"
-~/pajeng/build/pj_dump ${PAJEFILE}
+#~/pajeng/build/pj_dump ${PAJEFILE}
 #head ${CSV}
